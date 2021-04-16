@@ -1,0 +1,76 @@
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  labels:
+    app: "okteto_hello"
+  name: "okteto-hello-sv"
+spec:
+  ports:
+  - name: "svc-1-helloworl"
+    port: 9090
+    protocol: "TCP"
+    targetPort: 9090
+  selector:
+    app: "okteto_hello"
+  type: "ClusterIP"
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  labels:
+    app: "okteto_hello"
+  name: "okteto-hello-deployment"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "okteto_hello"
+  template:
+    metadata:
+      labels:
+        app: "okteto_hello"
+    spec:
+      containers:
+      - image: "wso2inc/hello:v0.1.0"
+        imagePullPolicy: "IfNotPresent"
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - "sleep"
+              - "15"
+        name: "okteto-hello-deployment"
+        ports:
+        - containerPort: 9090
+          name: "svc-1-helloworl"
+          protocol: "TCP"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+          requests:
+            memory: "100Mi"
+            cpu: "200m"
+      nodeSelector: {}
+---
+apiVersion: "autoscaling/v2beta2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  labels:
+    app: "okteto_hello"
+  name: "okteto-hello-hpa"
+spec:
+  maxReplicas: 2
+  metrics:
+  - resource:
+      name: "cpu"
+      target:
+        averageUtilization: 50
+        type: "Utilization"
+    type: "Resource"
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: "apps/v1"
+    kind: "Deployment"
+    name: "okteto-hello-deployment"
