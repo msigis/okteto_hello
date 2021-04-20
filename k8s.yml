@@ -4,6 +4,8 @@ kind: "Service"
 metadata:
   labels:
     app: "okteto_hello"
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
   name: "okteto-hello-sv"
 spec:
   ports:
