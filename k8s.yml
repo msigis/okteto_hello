@@ -76,3 +76,17 @@ spec:
     apiVersion: "apps/v1"
     kind: "Deployment"
     name: "okteto-hello-deployment"
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    dev.okteto.com/generate-host: "true"
+  name: hello-world
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: hello-world
+          servicePort: 8080
+        path: /
