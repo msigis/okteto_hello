@@ -1,4 +1,4 @@
 deploy:
 - okteto build -t okteto.dev/okteto_hello:${OKTETO_GIT_COMMIT}
 - kustomize edit set image wso2inc/hello=okteto.dev/okteto_hello:${OKTETO_GIT_COMMIT}
-- kubectl apply -f kustomization.yml
+- kubectl apply -k .
