@@ -82,12 +82,12 @@ kind: Ingress
 metadata:
   annotations:
     dev.okteto.com/generate-host: "true"
-  name: okteto_hello
+  name: okteto-hello
 spec:
   rules:
   - http:
       paths:
       - backend:
-          serviceName: okteto_hello
+          serviceName: okteto-hello
           servicePort: 8080
         path: /
